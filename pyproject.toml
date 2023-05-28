@@ -1,0 +1,55 @@
+[tool.black]
+line-length = 119
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.venv
+  | \.env
+  | cdk.out
+  | \.vscode
+  | build
+  | dist
+  | \.mypy_cache
+)\
+'''
+
+[tool.isort]
+profile = 'black'
+force_single_line = true
+combine_as_imports = true
+lines_between_types = 1
+lines_after_imports = 2
+src_paths = ["susty_frameworks", "tests"]
+line_length = 119
+
+[tool.flake8]
+max-line-length = 119
+select = [  "C",  "E",  "W",  "F",  "N",  "B",  "ANN",  "T",  "D",  "B950",]
+ignore = [  "E501",  "D107",  "D202",  "D400",  "D100",  "D104",  "ANN003",  "ANN002",  "ANN1",  "ANN401",]
+per-file-ignores = [  "*/__init__.py:F401",  "tests/*:ANN,D",]
+exclude = [    ".venv/*",    ".vscode/*",    "cdk.out/*",]
+
+[tool.bandit]
+skips = [
+  "B101",
+  "B105",
+]
+exclude_dirs = [
+  ".venv",
+  "cdk.out",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.1"
+addopts = """
+  --verbose
+  --color=yes
+  --assert=plain
+  --last-failed
+"""
+
+[tool.coverage.run]
+omit = ["*tests*"]

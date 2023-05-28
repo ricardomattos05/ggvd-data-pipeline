@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.Python
+build/
+dist/
+*.egg
+.eggs/
+env/
+.venv/
+env3/
+*.log
+
+
+# pip
+*.whl
+.cache/
+.eggs/
+.tox/
+.pip-build-env-*/
+.pip-cache-*/
+pip-selfcheck.json
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# .env file
+.env
+
+# Service Account credentials
+service_account.json
+
+# Project specific files
+.DS_Store
+src/aux.py
+src/note.py
+logs/
+**/python/**
+**/psycopg2-binary/**
+**/.vscode/**
+*.zip
+process_dev.py
+utils.py
+test.py
+
+# AWS SAM
+.aws-sam/
+packaged.yaml
+cdk.out/
+
+# Test files
+.coverage
+
+# Pre-commit cache
+.pre-commit/
+
+# Local test files
+event*.json
+
+# Makefile temporary files
+*.tmp

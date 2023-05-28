@@ -1,0 +1,44 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 128
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+
+Resources:
+  BronzeSourceTableFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/bronze/source/table/package.zip
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      Environment:
+        Variables:
+          API_KEY: xxxxxxxxxxxxxxxxx
+      Architectures:
+        - x86_64
+      Layers:
+        - !Ref PythonDependenciesLayer
+
+  PythonDependenciesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: python-dependencies
+      Description: Dependencies for the BronzeSourceTableFunction
+      ContentUri: src/bronze/source/table/python.zip
+      CompatibleRuntimes:
+        - python3.8
+
+  BronzeSourceTable2Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/bronze/source/table2/package.zip
+      Handler: lambda_handler.lambda_handler
+      Runtime: python3.8
+      Timeout: 60
+      # Add other Lambda functions as needed
