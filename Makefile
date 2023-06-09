@@ -93,21 +93,26 @@ FUNCTION_BUILD_DIR = $(FUNCTION_DIR)/build
 BASE_DIR = $(firstword $(subst /, ,$(FUNCTION_DIR)))/$(word 2,$(subst /, ,$(FUNCTION_DIR)))
 UTILS_DIR = $(BASE_DIR)/utils
 
-package-dependencies:
+.PHONY: package_dependencies
+package_dependencies:
 	docker build -t lambda-dependencies --build-arg FUNCTION_DIR=$(FUNCTION_DIR) .
-	docker run --rm -v $(PWD)/$(FUNCTION_DIR):/output lambda-dependencies bash -c "mkdir /output/python && cp -r /var/lang/lib/python3.9/site-packages/* /output/python && cd /output && zip -r python.zip python"
+	docker run --rm -v $(PWD)/$(FUNCTION_DIR):/output lambda-dependencies bash -c "mkdir /output/python && cp -r /var/lang/lib/python3.9/site-packages/* /output/python && rm -rf /output/python/pip* /output/python/setuptools* /output/python/wheel* && cd /output && zip -r python.zip python"
 
 
 .PHONY: package
-package: package-dependencies ## Package the Lambda function code and dependencies for deployment. Define FUNCTION_DIR=src/layer/source/table to package a specific function
+package: ## Package the Lambda function code for deployment. Define FUNCTION_DIR=src/layer/source/table to package a specific function
 	mkdir -p $(FUNCTION_BUILD_DIR)
 	find $(FUNCTION_DIR) -type f -name "*.py" ! -name "__init__.py" ! -path "*/__pycache__/*" ! -path "*/python/*" -exec cp {} $(FUNCTION_BUILD_DIR) \;
 	cp -r $(UTILS_DIR)/* $(FUNCTION_BUILD_DIR)/
 	cd $(FUNCTION_BUILD_DIR) && zip -r ../package.zip * -x "*__init__.py" -x "*__pycache__/*"
 	rm -r $(FUNCTION_DIR)/build
-	rm -r $(FUNCTION_DIR)/python
-# Set FUNCTION_DIR to run the package command and create python.zip and package.zip for the layer and table you want to:
+
+# Set FUNCTION_DIR to run the package command and create package.zip for the table you want to:
 # make package FUNCTION_DIR=src/bronze/source/table
+
+.PHONY: build_package
+build_package: package_dependencies package ## Package the Lambda function code and dependencies for deployment. Define FUNCTION_DIR=src/layer/source/table to package a specific function
+	rm -r $(FUNCTION_DIR)/python
 
 .PHONY: invoke-local-bronze-endpoint1
 invoke-local-bronze-endpoint1: ## Invoke the Bronze Endpoint1 Lambda function locally using SAM
