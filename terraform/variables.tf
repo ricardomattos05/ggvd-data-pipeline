@@ -51,3 +51,7 @@ variable "moniker" {
   description = "Moniker for all resources across the company"
   default     = "uffic-ec1"
 }
+
+variable "api_key" {
+  description = "IMDB api key"
+}

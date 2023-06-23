@@ -4,6 +4,7 @@ variable "role" {}
 variable "handler" {}
 variable "runtime" {}
 variable "timeout" {}
+variable "memory_size" {}
 variable "layers" {
   type    = list(string)
   default = []

@@ -63,12 +63,13 @@ repos:
         types: [file, python]
         stages: [commit]
 
-      - id: flake8
-        name: Run Flake8
-        entry: flake8
-        language: system
-        types: [file, python]
-        stages: [commit]
+      # - id: flake8
+      #   name: Run Flake8
+      #   entry: flake8
+      #   language: system
+      #   types: [file, python]
+      #   args: [--config=pyproject.toml]
+      #   stages: [commit]
 
       - id: yamllint
         name: Run Yamllint

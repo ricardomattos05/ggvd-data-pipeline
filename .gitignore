@@ -43,7 +43,6 @@ logs/
 **/.vscode/**
 *.zip
 process_dev.py
-utils.py
 test.py
 
 # AWS SAM

@@ -24,6 +24,22 @@ module "iam_policy" {
       resources  = ["${module.s3.s3_bucket_arns["bronze"]}/*"]
       conditions = []
     }
+    SQSSendMessage = {
+      effect = "Allow"
+      actions = [
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes"
+      ]
+      resources = ["${aws_sqs_queue.myqueue.arn}"]
+    }
+    SQSReceiveAndDelete = {
+      effect = "Allow"
+      actions = [
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage"
+      ]
+      resources = ["${aws_sqs_queue.myqueue.arn}"]
+    }
   }
 }
 
@@ -55,20 +71,32 @@ resource "aws_iam_role" "AWSLambdaRole_UFFIC_BronzeETL" {
 module "Lambda_bronze_elt" {
   source = "./modules/lambda"
 
-  filename      = "../data_pipeline/bronze/source/table/package.zip"
+  filename      = "../data_pipeline/bronze/tmdb/movies/package.zip"
   function_name = "Lambda_bronze_elt"
   role          = aws_iam_role.AWSLambdaRole_UFFIC_BronzeETL.arn
   handler       = "lambda_function.lambda_handler"
   runtime       = "python3.9"
-  timeout       = 60
+  timeout       = 120
+  memory_size   = 1024
   layers = [
+    "arn:aws:lambda:eu-central-1:473178649040:layer:request:1"
   ]
   environment_vars = {
-
+    SQS_QUEUE_URL = aws_sqs_queue.myqueue.id
+    BRONZE_BUCKET = module.s3.s3_bucket_name["bronze"]
+    API_KEY       = var.api_key
   }
 
   depends_on = [
     module.s3,
   ]
   tags = merge(module.tags.common_tags, module.tags.lambda_specific_tags)
+}
+
+##### SQS TRIGGER
+
+resource "aws_lambda_event_source_mapping" "sqs_trigger" {
+  event_source_arn  = aws_sqs_queue.myqueue.arn
+  function_name     = module.Lambda_bronze_elt.function_name
+  batch_size        = 1
 }

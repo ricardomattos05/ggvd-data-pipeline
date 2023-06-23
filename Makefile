@@ -88,7 +88,7 @@ build: ## Build the Docker image for local Lambda development
 	sam build --use-container
 
 
-FUNCTION_DIR ?= src/bronze/source/table
+FUNCTION_DIR ?= data_pipeline/bronze/source/table
 FUNCTION_BUILD_DIR = $(FUNCTION_DIR)/build
 BASE_DIR = $(firstword $(subst /, ,$(FUNCTION_DIR)))/$(word 2,$(subst /, ,$(FUNCTION_DIR)))
 UTILS_DIR = $(BASE_DIR)/utils
@@ -100,7 +100,7 @@ package_dependencies:
 
 
 .PHONY: package
-package: ## Package the Lambda function code for deployment. Define FUNCTION_DIR=src/layer/source/table to package a specific function
+package: ## Package the Lambda function code for deployment. Define FUNCTION_DIR=data_pipeline/layer/source/table to package a specific function
 	mkdir -p $(FUNCTION_BUILD_DIR)
 	find $(FUNCTION_DIR) -type f -name "*.py" ! -name "__init__.py" ! -path "*/__pycache__/*" ! -path "*/python/*" -exec cp {} $(FUNCTION_BUILD_DIR) \;
 	cp -r $(UTILS_DIR)/* $(FUNCTION_BUILD_DIR)/
@@ -108,16 +108,16 @@ package: ## Package the Lambda function code for deployment. Define FUNCTION_DIR
 	rm -r $(FUNCTION_DIR)/build
 
 # Set FUNCTION_DIR to run the package command and create package.zip for the table you want to:
-# make package FUNCTION_DIR=src/bronze/source/table
+# make package FUNCTION_DIR=data_pipeline/bronze/source/table
 
 .PHONY: build_package
-build_package: package_dependencies package ## Package the Lambda function code and dependencies for deployment. Define FUNCTION_DIR=src/layer/source/table to package a specific function
+build_package: package_dependencies package ## Package the Lambda function code and dependencies for deployment. Define FUNCTION_DIR=data_pipeline/layer/source/table to package a specific function
 	rm -r $(FUNCTION_DIR)/python
 
-.PHONY: invoke-local-bronze-endpoint1
-invoke-local-bronze-endpoint1: ## Invoke the Bronze Endpoint1 Lambda function locally using SAM
+.PHONY: invoke_bronze_function
+invoke_bronze_function: ## Invoke the bronze/source/table Lambda function locally using SAM. Define FUNCTION_DIR=data_pipeline/bronze/source/table to invoke a specific function
 	@echo "Invoking Lambda function $(function) locally"
-	sam local invoke BronzeSourceTableFunction -e event.json
+	sam local invoke BronzeSourceTableFunction -e $(FUNCTION_DIR)/event.json
 # add other functions for locally invoke using SAM
 
 .PHONY: deploy

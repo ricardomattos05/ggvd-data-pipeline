@@ -13,5 +13,4 @@ pytest
 yamllint
 bandit
 commitizen
-python-dotenv
 handler
