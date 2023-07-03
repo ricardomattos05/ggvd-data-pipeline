@@ -76,11 +76,6 @@ def upload_to_s3(filmes, s3, S3_BUCKET_NAME, start_page, end_page):
     current_date = datetime.datetime.now().strftime("%Y/%m/%d")
     movies_destino = f"tmdb/movies/{current_date}/filmes_{start_page}_{end_page}.json"
 
-    # temp_file_path = f"/tmp/filmes_{start_page}_{end_page}.json"
-
-    # with open(temp_file_path, "w") as f:
-    #     json.dump(filmes, f)
-
     try:
         filmes_json = json.dumps(filmes)
         s3.upload_file(filmes_json, S3_BUCKET_NAME, movies_destino)
