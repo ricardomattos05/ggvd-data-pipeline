@@ -39,7 +39,7 @@ variable "company_name" {
 variable "bucket_names" {
   description = "Layer's names for the buckets."
   type        = list(string)
-  default     = ["athena", "bronze", "silver", "gold"]
+  default     = ["aws-glue-assets","athena", "bronze", "silver", "gold"]
 }
 
 variable "force_destroy" {

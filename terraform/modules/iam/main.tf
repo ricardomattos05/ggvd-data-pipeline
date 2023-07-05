@@ -44,6 +44,13 @@ resource "aws_iam_group_policy" "policy" {
         ]
         Resource = "*"
       },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "glue:*"
+        ],
+        "Resource": "*"
+      },
     ]
   })
 }
