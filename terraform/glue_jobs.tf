@@ -43,7 +43,7 @@ resource "aws_iam_role" "AWSGlueServiceRole" {
 resource "aws_s3_object" "object" {
   bucket = module.s3.s3_bucket_name["aws-glue-assets"]
   key    = "glue_scripts/metadata_processing.py"
-  source = "../data_pipeline/silver/imdb/metadata_processing.py" # Substitua pelo caminho local do seu script
+  source = "../data_pipeline/silver/imdb/metadata_processing.py"
   acl    = "private"
 
   depends_on = [module.s3]
@@ -67,7 +67,7 @@ module "glue_movies_metadata" {
 resource "aws_s3_object" "object_reviews" {
   bucket = module.s3.s3_bucket_name["aws-glue-assets"]
   key    = "glue_scripts/reviews_processing.py"
-  source = "../data_pipeline/silver/imdb/reviews_processing.py" # Substitua pelo caminho local do seu script
+  source = "../data_pipeline/silver/imdb/reviews_processing.py"
   acl    = "private"
 
   depends_on = [module.s3]
@@ -84,5 +84,29 @@ module "glue_reviews" {
   timeout           = 20
   worker_type       = "G.1X"
   number_of_workers = 5
+  max_retries       = 0
+}
+
+#### Job Tags Table
+resource "aws_s3_object" "object_tags" {
+  bucket = module.s3.s3_bucket_name["aws-glue-assets"]
+  key    = "glue_scripts/tags_processing.py"
+  source = "../data_pipeline/silver/movie_lens/tags_processing.py"
+  acl    = "private"
+
+  depends_on = [module.s3]
+}
+
+module "glue_tags" {
+  source = "./modules/glue"
+
+  glue_job_name     = "silver_tags_processing_job"
+  role              = aws_iam_role.AWSGlueServiceRole.arn
+  database_name     = "uffic_silver_db"
+  script_location   = "s3://${module.s3.s3_bucket_name["aws-glue-assets"]}/${aws_s3_object.object_tags.key}"
+  glue_version      = "3.0"
+  timeout           = 10
+  worker_type       = "G.1X"
+  number_of_workers = 2
   max_retries       = 0
 }
