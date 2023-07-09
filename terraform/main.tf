@@ -38,6 +38,44 @@ module "s3" {
 }
 
 module "iam" {
+  source     = "./modules/iam"
+  group_name = "ggvd-uff-ic"
+  policies = [
+    {
+      name = "S3Policy"
+      path = "./policies/S3Policy.tpl"
+      vars = {
+        bucket_arns = jsonencode([
+          for bucket_arn in concat(formatlist("%s/*", values(module.s3.s3_bucket_arns)), values(module.s3.s3_bucket_arns)) : bucket_arn
+        ])
+      }
+    },
+    {
+      name = "LambdaPolicy"
+      path = "./policies/LambdaPolicy.tpl"
+      vars = {
+        lambda_arns = jsonencode([
+          module.Lambda_bronze_elt.function_arn,
+          module.start_lambda.function_arn
+        ])
+      }
+    },
+    {
+      name = "AthenaPolicy"
+      path = "./policies/AthenaPolicy.tpl"
+      vars = {}
+    },
+    {
+      name = "GlueJobPolicy"
+      path = "./policies/GlueJobPolicy.tpl"
+      vars = {}
+    }
+  ]
+}
+
+
+
+/* module "iam" {
   source      = "./modules/iam"
   group_name  = "ggvd-uff-ic"
   policy_name = "GGVDProjectAccessPolicy"
@@ -45,7 +83,7 @@ module "iam" {
   lambda_arns = [module.Lambda_bronze_elt.function_arn,
   module.start_lambda.function_arn]
 
-}
+} */
 
 resource "aws_glue_catalog_database" "uffic_glue_database_silver" {
   name = "uffic_silver_db"
