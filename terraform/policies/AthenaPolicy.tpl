@@ -21,6 +21,9 @@
           "arn:aws:athena:eu-central-1:473178649040:workgroup/wg_uffic_dev/*",
           "arn:aws:athena:eu-central-1:473178649040:database/uffic_silver_db",
           "arn:aws:athena:eu-central-1:473178649040:database/uffic_silver_db/*",
+          "arn:aws:glue:eu-central-1:473178649040:database/uffic_gold_db",
+          "arn:aws:glue:eu-central-1:473178649040:database/uffic_gold_db/*",
+          "arn:aws:glue:eu-central-1:473178649040:table/uffic_gold_db/*",
           "arn:aws:s3:::uffic-athena-eucentral1-473178649040-dev",
           "arn:aws:s3:::uffic-athena-eucentral1-473178649040-dev/*"
         ]
@@ -38,7 +41,10 @@
           "arn:aws:glue:eu-central-1:473178649040:catalog",
           "arn:aws:glue:eu-central-1:473178649040:database/uffic_silver_db",
           "arn:aws:glue:eu-central-1:473178649040:database/uffic_silver_db/*",
-          "arn:aws:glue:eu-central-1:473178649040:table/uffic_silver_db/*"
+          "arn:aws:glue:eu-central-1:473178649040:table/uffic_silver_db/*",
+          "arn:aws:glue:eu-central-1:473178649040:database/uffic_gold_db",
+          "arn:aws:glue:eu-central-1:473178649040:database/uffic_gold_db/*",
+          "arn:aws:glue:eu-central-1:473178649040:table/uffic_gold_db/*"
         ]
       }
     ]

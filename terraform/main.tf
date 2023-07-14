@@ -73,20 +73,12 @@ module "iam" {
   ]
 }
 
-
-
-/* module "iam" {
-  source      = "./modules/iam"
-  group_name  = "ggvd-uff-ic"
-  policy_name = "GGVDProjectAccessPolicy"
-  bucket_arns = concat(formatlist("%s/*", values(module.s3.s3_bucket_arns)), values(module.s3.s3_bucket_arns))
-  lambda_arns = [module.Lambda_bronze_elt.function_arn,
-  module.start_lambda.function_arn]
-
-} */
-
 resource "aws_glue_catalog_database" "uffic_glue_database_silver" {
   name = "uffic_silver_db"
+}
+
+resource "aws_glue_catalog_database" "uffic_glue_database_gold" {
+  name = "uffic_gold_db"
 }
 
 resource "aws_athena_workgroup" "workgroup_analytics" {
