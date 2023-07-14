@@ -127,16 +127,15 @@ terraform apply --auto-approve
 
 ## Processamento de Dados
 
-O processamento de dados é dividido em três estágios: bronze, prata e ouro.
+O pipeline de processamento de dados é dividido em três fases:
 
 - **bronze**: Os dados são extraídos do IMDB e MovieLens através de funções Lambda disparadas por intervalos de páginas a serem requisitadas pelas filas AWS SQS. Os dados extraídos são armazenados no bucket bronze do S3 em formato JSON.
 
-- TO DO: incluir diagrama dos componentes para a etapa bronze
-
 -  **prata**: Os dados JSON são processados por jobs do AWS Glue, utilizando pyspark. Os jobs do Glue transformam os dados com limpezas basicas como, tratamento de valores faltantes, deduplicação de linhas, criação de novos campos, etc.. para um formato mais fácil de analisar e os armazenam de volta no S3 como tabelas Delta. Aqui também é utilizado o crawler do Glue para mapear as partições, e tabelas do database uffic_silver_db.
 
-- TO DO: incluir diagrama dos componentes para a etapa silver
+- **ouro**: Na camada ouro, os dados transformados são utilizados para análises detalhadas. Aqui estão algumas das questões que exploramos durante esta fase:
 
-- **ouro**: Os dados transformados são usados para análises mais detalhadas e prontas para consumo, como:
-
-* TO DO: incluir perguntas e tabelas da camada ouro
+Quais são os filmes mais bem avaliados?
+Quais são os filmes mais populares?
+Quais gêneros são mais populares?
+Como as avaliações mudaram ao longo do tempo?
